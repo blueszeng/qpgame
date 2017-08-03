@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>测试用</title>
+
+    <!-- Bootstrap -->
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+<link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+	<div class="container-fluid">
+
+	    <div class="row">
+			<div class="panel panel-default">
+			  <div class="panel-body" id="user-info">
+				请登陆登陆
+			  </div>
+			</div>
+		</div>
+		<div class="row" id="content">
+			<!-- login -->
+			<div class=" big-model" id="login">
+				
+				<form>
+				  <div class="form-group">
+					<label for="exampleInputEmail1">用户名</label>
+					<input type="text" class="form-control" id="name" placeholder="Email">
+				  </div>
+				  <div class="form-group">
+					<label for="exampleInputPassword1">Password</label>
+					<input type="password" class="form-control" id="password" placeholder="Password">
+				  </div>
+				  
+				  <button type="button" class="btn btn-default btn-login">登陆</button>
+				</form>
+				
+			</div>
+			<!--\\\\\\\\\ login -->
+			
+			<!-- logout -->
+			<div class="col-xs-12 hidden big-model" id="logout">
+				<form>
+				  <button type="button" class="btn btn-default btn-logout">退出</button>
+				  <button type="button" class="btn btn-default btn-create">创建</button>
+				  <button type="button" class="btn btn-default btn-join">加入</button>
+				</form>
+			</div>
+			<!-- \\\\\\\\\\\\\\\\\\\\\\\logout -->
+			
+			<!-- room -->
+			<div class="col-xs-12 hidden big-model" id="room">
+				<form>
+				  <button type="button" class="btn btn-default btn-leave-room">Leave Room</button>
+				</form>
+				
+				<div class="panel panel-default">
+				  <div class="panel-body" id="room-info">
+					。。。
+				  </div>
+				  <div class="panel-footer" id="seats-info">...</div>
+				</div>
+			</div>
+			<!-- \\\\\\\\\\\\\\\\\\\\\\\room -->
+			
+		</div>
+	</div>
+   
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+	<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+	<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" 
+		integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+		crossorigin="anonymous"></script>
+	 <script src="protobuf.js-6.8.0/dist/protobuf.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+	<script type="text/javascript">
+	//var protobuf = require("protobufjs/light");
+	//var ProtoBuf = dcodeIO.ProtoBuf;
+	var ws = new WebSocket('ws://127.0.0.1:3653')
+	var intvar;
+	var g_self = {};
+	ws.onopen = function(evt){
+		var token = localStorage.getItem('token');
+		if (token) {
+			var data = {};
+			var re = {};
+			re.Token = token;
+			data.ReConnect = re;
+			//sendMsg(data);
+		}
+		//intvar = self.setInterval("clock()",8000);
+	} 
+	ws.onclose = function(evt) {
+		console.log("sockent is closed....")
+		self.clearInterval(intvar)
+	}
+	ws.onerror = function(evt) {
+		console.log("sockent is error anyway....")
+		self.clearInterval(intvar)
+	}
+	
+	function clock()
+	{
+		var data = {
+			Heatbeat : {
+				HB:"fucking"
+			}
+		};
+		//data.name = name;
+		//data.password = password;	
+		sendMsg(data);
+	}
+
+	ws.onmessage = function (event) {
+	    var data;
+		var reader = new FileReader();
+		reader.readAsText(event.data)
+		reader.onload = function() {
+			var temp = this.result;
+			console.log(this.result);
+			data = JSON.parse(this.result);
+			data = data.ClientMsg;
+			var type = data.Code;
+			//console.log(data);
+			switch (type) {
+			case 0: // JOIN
+				break;
+			case 1: // 
+				break;
+			case 2: // Login result
+				if (0 == data.Status) {
+					localStorage.setItem('token', data.Msg);
+				}//repeat landing
+				else if(2 == data.Status) {
+					alert(data.Msg);
+				}
+				//user name or password is wrong
+				else {
+					alert(data.Msg);
+				}
+				break;
+			
+			case 3: //reconnect
+				//login success
+				if (0 == data.Status) {//
+					localStorage.setItem('token', data.Msg);
+				}
+				//repeat landing
+				else if(2 == data.Status) {
+					alert("此帐户已经在其它地方登陆");
+				}
+				//user name or password is wrong
+				else {
+					alert(data.Msg);
+				}
+				break;
+			case 4: //reconnect
+				if (0 == data.Status) {
+					var user_info = data.Msg;
+					g_self.user_name = user_info.UserName;
+					g_self.uid = user_info.ID;
+					g_self.cards = user_info.RoomCards;
+					g_self.room_id = user_info.RoomID;
+					$("title").html(user_info.UserName);
+					
+					var h1_html = "NAME: " + user_info.UserName + ", CARDS:" + user_info.RoomCards + ",uid:" + user_info.ID
+					$(".big-model").addClass("hidden");
+					$("#logout").removeClass("hidden");
+					$('#user-info').html(h1_html);
+					if (user_info.RoomID != 0) {
+						$("#join").click();
+					}
+					
+				}
+				break;
+			case 9://repeat landing
+				//
+				alert("异地登陆");
+				//localStorage.setItem('token', '');
+				//window.location.href = '';
+				break;
+			case 10://token expired
+				alert("token expired");
+				localStorage.setItem('token', '');
+				window.location.href = '';
+				break;
+			case 3002://create room
+				if (0 == data.Status) {
+					var row = data.Msg;
+					g_self.room_id = row.ID;
+					updateRoom(data);
+				} else {
+					alert(data.Msg)
+				}
+				break;
+			case 3010://boadcast room info
+				//over done none
+				if (3 == data.Status || 4 == data.Status || 5 == data.Status) {
+					$(".big-model").addClass("hidden");
+					$("#logout").removeClass("hidden");
+					g_self.room_id = 0;
+					break;
+				} 
+				//dissolving
+				else if (2 == data.Status) {
+					break;
+				}
+				//playing
+				else if (1 == data.Status) {
+					updateRoom(data);
+				} else if (0 == data.Status) {
+					updateRoom(data);
+				}
+				break;
+				//go on do blow
+			case 3015://re join room
+			case 3004://join room
+				
+				if (0 == data.Status) {	
+					var row = data.Msg;
+					g_self.room_id = row.ID;
+					updateRoom(data);
+				} else {
+					alert(data.Status);
+				}
+				break;
+			case 3012:	//leav from
+				//游戏结束直接离开
+				if (4 == data.Status) {
+					//window.location.href = '';
+					$(".big-model").addClass("hidden");
+					$("#logout").removeClass("hidden");
+					g_self.room_id = 0;
+					
+				}
+				//申请解散中
+				else if (2 == data.Status) {
+					alert(data.Status + ",申请解散");		
+				}
+				//离开成功
+				else if (0 == data.Status) {
+					//window.location.href = '';	
+					//alert(data.Status);
+					$(".big-model").addClass("hidden");
+					$("#logout").removeClass("hidden");
+					g_self.room_id = 0;
+				} else if (5 == data.Status) {
+					alert("on other room");
+				}
+				//直接离开
+				else {
+					//window.location.href = '';
+					$(".big-model").addClass("hidden");
+					$("#logout").removeClass("hidden");
+					g_self.room_id = 0;
+				}
+				break;
+			case 3013: //on user join romm
+				{	
+					var row = data.Msg;
+					updateRoomDesk(row);
+				}
+			
+			}//switch
+			
+		}
+	
+       // var data = JSON.parse();
+		
+        
+    };
+	
+	/*ws.onopen = function() {
+		// 发送 Hello 消息
+		ws.send(JSON.stringify({Hello: {
+			Name: 'leaf'
+		}}))
+	}*/
+	
+	function sendMsg(data) {
+		ws.send(JSON.stringify(data));
+	}
+	
+	$(document).ready(function(){
+		$(".btn-login").click(function(){
+			var name = $('#name').val();
+			var password = $('#password').val();
+			var data = {
+				Login : {
+					Name : name,
+					Password : password
+				}
+			};
+			//data.name = name;
+			//data.password = password;	
+			sendMsg(data);
+		});
+	  
+		$(".btn-logout").click(function(){
+			var token = localStorage.getItem('token');
+			if (token) {
+				var data = {};
+				var re = {};
+				re.Token = token;
+				data.Logout = re;
+				sendMsg(data);
+			}
+			window.location.href = '';
+		});
+		$(".btn-create").click(function(){
+			var data = {}
+			var msg = {}
+			msg.Code = 3001
+			data.RoomMsg = msg;
+			sendMsg(data);
+			
+		});
+		$(".btn-join").click(function(){
+			var data = {}
+			var msg = {}
+			msg.Code = 3003
+			msg.RoomID = g_self.room_id;
+			data.RoomMsg = msg;
+			sendMsg(data);
+		});
+		$(".btn-leave-room").click(function() {
+			var data = {}
+			var msg = {}
+			msg.Code = 3011
+			msg.RoomID = g_self.room_id;
+			data.RoomMsg = msg;
+			sendMsg(data);
+		});
+	});
+	
+	function updateRoom(data) 
+	{
+		console.log(data.Msg);
+		var row = data.Msg
+		room_id = row.ID;
+		room_name = row.Name;
+		$("#room-info").html("RoomID:" + room_id + ", RoomName:" + room_name);
+		
+		updateRoomDesk(row.Seats);
+		
+		$(".big-model").addClass("hidden");
+		$("#room").removeClass("hidden");
+	}
+	
+	function updateRoomDesk(row)
+	{
+		//users
+		var user_info = "";
+		for (i in row) {
+			u = row[i]
+			user_info += "<p id='idx_" + i + "'>" + i + ":" + u.UID + "," + u.UserName + "," + u.IsOnline + "</p>";
+		}
+		$("#seats-info").html(user_info);
+	}
+	</script>
+  </body>
+</html>
