@@ -246,9 +246,11 @@ func handleHeatbeat(args []interface{}) {
 		nmmsg.Msg = time.Local.String() + "," + m.HB
 		SendMsg(c.Agent, &nmmsg)
 	} else {
-		nmmsg.Msg = time.Local.String()+ "," + m.HB
+		nmmsg.Msg = time.Local.String() + "," + m.HB
 		SendMsg(a, &nmmsg)
 	}
+
+	log.Debug("heartbeat .... %v", m.HB)
 
 }
 
